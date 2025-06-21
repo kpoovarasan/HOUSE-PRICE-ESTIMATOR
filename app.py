@@ -13,7 +13,11 @@ GOOGLE_DRIVE_URL = 'https://drive.google.com/uc?id=1HTDE28HhFk47wnIiePTp4Ebr9NJ6
 
 def load_model():
     global model
-    model = compress_pickle.load('random_forest_model.pkl', compression='gzip')
+    if not os.path.exists(MODEL_PATH):
+        print("Downloading model from Google Drive...")
+        gdown.download(GOOGLE_DRIVE_URL, MODEL_PATH, quiet=False)
+    with open(MODEL_PATH, 'rb') as f:
+        model = pickle.load(f)
 
 @app.before_request
 def initialize():
