@@ -1,27 +1,29 @@
-# app.py
-from flask import Flask, render_template, request, redirect, url_for
-import pickle
-import numpy as np
-import gzip
-import gdown
 import os
+import pickle
+import gdown
+import numpy as np
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
+model = None
 
-model_path = "random_forest_model.pkl.gz"
-gdrive_file_id = "1HTDE28HhFk47wnIiePTp4Ebr9NJ60DG0"  # 👈 Replace with your actual file ID
+MODEL_PATH = 'random_forest_model.pkl'
+GOOGLE_DRIVE_URL = 'https://drive.google.com/uc?id=1HTDE28HhFk47wnIiePTp4Ebr9NJ60DG0'
 
-if not os.path.exists(model_path):
-    print("Downloading model from Google Drive...")
-    url = f"https://drive.google.com/uc?id={gdrive_file_id}"
-    gdown.download(url, model_path, quiet=False)
+def load_model():
+    global model
+    if not os.path.exists(MODEL_PATH):
+        print("Downloading model from Google Drive...")
+        gdown.download(GOOGLE_DRIVE_URL, MODEL_PATH, quiet=False)
+    with open(MODEL_PATH, 'rb') as f:
+        model = pickle.load(f)
 
-# Load the trained model
-with open(model_path, 'rb') as file:
-    model = pickle.load(file)
+@app.before_first_request
+def initialize():
+    load_model()
 
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
@@ -46,11 +48,10 @@ def predict():
 
         final_input = np.array([features])
         prediction = model.predict(final_input)[0]
-        predicted_price = f"₹ {prediction:,.2f}"
-
+        predicted_text = f"₹ {prediction:,.2f}"
         return render_template('index.html', prediction_text=predicted_text)
     except Exception as e:
         return render_template('index.html', prediction_text=f"Error occurred: {str(e)}")
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+if __name__ == '__main__':
+    app.run(debug=True)
