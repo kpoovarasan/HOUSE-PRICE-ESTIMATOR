@@ -1,0 +1,155 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart House Price Estimator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .container {
+     margin-top: 50px;
+     max-width: 900px;
+    }
+
+    .card {
+      border-radius: 15px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    }
+    .header-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+    small {
+      font-size: 0.8rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <img src="{{ url_for('static', filename='house image.jpg') }}" class="header-img" alt="House Image">
+
+
+      <div class="card-body">
+        <h3 class="card-title text-center">🏡 Predict House Price</h3>
+
+        {% if prediction_text %}
+        <div class="alert alert-success text-center mt-4" role="alert">
+          {{ prediction_text }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/predict">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Number of Bedrooms</label>
+              <input type="number" class="form-control" name="bedrooms" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Number of Bathrooms</label>
+              <select class="form-select" name="bathrooms" required>
+                <option value="">Select...</option>
+                <option value="1.0">1 Full</option>
+                <option value="1.5">1 Full, 1 Half</option>
+                <option value="2.0">2 Full</option>
+                <option value="2.5">2 Full, 1 Half</option>
+                <option value="3.0">3 Full</option>
+                <option value="3.5">3 Full, 1 Half</option>
+                <option value="4.0">4 Full</option>
+                <option value="4.5">4 Full, 1 Half</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Living Area (sq ft)</label>
+              <input type="number" class="form-control" name="living_area" placeholder="e.g., 3650" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Lot Area (sq ft)</label>
+              <input type="number" class="form-control" name="lot_area" placeholder="e.g., 5000" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Number of Floors</label>
+              <select class="form-select" name="number_of_floors" required>
+                <option value="">Select...</option>
+                <option value="1.0">1 Floor</option>
+                <option value="1.5">1.5 Floors</option>
+                <option value="2.0">2 Floors</option>
+                <option value="2.5">2.5 Floors</option>
+                <option value="3.0">3 Floors</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Waterfront Present</label>
+              <select class="form-select" name="waterfront_present" required>
+                <option value="">Select...</option>
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Number of Views <small>(0 to 10)</small></label>
+              <input type="number" class="form-control" name="number_of_views" min="0" max="10" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Grade of the House</label>
+              <select class="form-select" name="grade_of_the_house" required>
+                <option value="">Select...</option>
+                <option value="1">Very Poor</option>
+                <option value="2">Poor</option>
+                <option value="3">Fair</option>
+                <option value="4">Low</option>
+                <option value="5">Low Average</option>
+                <option value="6">Average</option>
+                <option value="7">Good Average</option>
+                <option value="8">Good</option>
+                <option value="9">Very Good</option>
+                <option value="10">Excellent</option>
+                <option value="11">Luxury</option>
+                <option value="12">Custom Luxury</option>
+                <option value="13">Top-tier Luxury</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Area of the Basement (sq ft)</label>
+              <input type="number" class="form-control" name="area_of_basement" placeholder="e.g., 800" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Pin Code</label>
+              <input type="number" class="form-control" name="postal_code" placeholder="e.g., 122004" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Latitude</label>
+              <input type="number" step="0.0001" class="form-control" name="lattitude" placeholder="e.g., 52.8852" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Living Area After Renovation (sq ft)</label>
+              <input type="number" class="form-control" name="living_area_renov" placeholder="e.g., 3800" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Lot Area After Renovation (sq ft)</label>
+              <input type="number" class="form-control" name="lot_area_renov" placeholder="e.g., 5200" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Renovation Age (years)</label>
+              <input type="number" class="form-control" name="renovation_age" placeholder="e.g., 5" required>
+            </div>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-dark px-4 rounded-pill">🔍 Estimate Price</button>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
