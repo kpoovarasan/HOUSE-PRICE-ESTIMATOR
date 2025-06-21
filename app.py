@@ -18,9 +18,11 @@ def load_model():
     with open(MODEL_PATH, 'rb') as f:
         model = pickle.load(f)
 
-@app.before_first_request
+@app.before_request
 def initialize():
-    load_model()
+    global model
+    if model is None:
+        load_model()
 
 @app.route('/')
 def index():
