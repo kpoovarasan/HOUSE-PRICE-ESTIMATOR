@@ -1,5 +1,6 @@
 import os
 import pickle
+import compress_pickle
 import gdown
 import numpy as np
 from flask import Flask, request, render_template
@@ -12,11 +13,7 @@ GOOGLE_DRIVE_URL = 'https://drive.google.com/uc?id=1HTDE28HhFk47wnIiePTp4Ebr9NJ6
 
 def load_model():
     global model
-    if not os.path.exists(MODEL_PATH):
-        print("Downloading model from Google Drive...")
-        gdown.download(GOOGLE_DRIVE_URL, MODEL_PATH, quiet=False)
-    with open(MODEL_PATH, 'rb') as f:
-        model = pickle.load(f)
+    model = compress_pickle.load('random_forest_model.pkl', compression='gzip')
 
 @app.before_request
 def initialize():
