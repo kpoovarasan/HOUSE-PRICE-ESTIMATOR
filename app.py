@@ -2,11 +2,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 import pickle
 import numpy as np
-
+import gzip
 app = Flask(__name__)
 
 # Load the trained model
-with open('random_forest_model.pkl', 'rb') as file:
+with gzip.open('random_forest_model.pkl.gz', 'rb') as file:
     model = pickle.load(file)
 
 @app.route('/')
