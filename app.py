@@ -8,7 +8,7 @@ import os
 
 app = Flask(__name__)
 
-model_path = "random_forest_model.pkl"
+model_path = "random_forest_model.pkl.gz"
 gdrive_file_id = "1HTDE28HhFk47wnIiePTp4Ebr9NJ60DG0"  # 👈 Replace with your actual file ID
 
 if not os.path.exists(model_path):
