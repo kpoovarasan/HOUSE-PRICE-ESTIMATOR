@@ -43,18 +43,5 @@ Users provide the following details:
 - Lot Area After Renovation (sq ft)
 - Renovation Age (years)
 
----
 
-## 📁 Project Structure
-house-price-estimator/
-│
-├── app.py # Flask application
-├── random_forest_model.pkl # Trained ML model
-├── requirements.txt # Python dependencies
-├── render.yaml # Render deploy config
-├── templates/
-│ ├── index.html # Input form UI
-│ └── result.html # Result page
-└── static/
-└── (Optional images or assets)
 
